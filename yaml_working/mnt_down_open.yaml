@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: mnt-path-
+  annotations: {pipelines.kubeflow.org/kfp_sdk_version: 1.8.10, pipelines.kubeflow.org/pipeline_compilation_time: '2022-01-13T09:59:18.853268',
+    pipelines.kubeflow.org/pipeline_spec: '{"description": "no use", "name": "mnt_path"}'}
+  labels: {pipelines.kubeflow.org/kfp_sdk_version: 1.8.10}
+spec:
+  entrypoint: mnt-path
+  templates:
+  - name: mnt-path
+    dag:
+      tasks:
+      - {name: pvc, template: pvc}
+  - name: pvc
+    container:
+      image: stellapark401/caltech101:datagen
+      volumeMounts:
+      - {mountPath: /app/data, name: stella-test-pv}
+    metadata:
+      annotations: {pipelines.kubeflow.org/task_display_name: dataset_generate}
+      labels:
+        pipelines.kubeflow.org/kfp_sdk_version: 1.8.10
+        pipelines.kubeflow.org/pipeline-sdk-type: kfp
+        pipelines.kubeflow.org/enable_caching: "true"
+    volumes:
+    - name: stella-test-pv
+      persistentVolumeClaim: {claimName: data-pvc}
+  arguments:
+    parameters: []
+  serviceAccountName: pipeline-runner

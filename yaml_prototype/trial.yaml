@@ -1,0 +1,21 @@
+name: Fn op
+implementation:
+  container:
+    image: python:3.7
+    command:
+    - sh
+    - -ec
+    - |
+      program_path=$(mktemp)
+      printf "%s" "$0" > "$program_path"
+      python3 -u "$program_path" "$@"
+    - |
+      def fn_op():
+          print('you can build component this way too')
+
+      import argparse
+      _parser = argparse.ArgumentParser(prog='Fn op', description='')
+      _parsed_args = vars(_parser.parse_args())
+
+      _outputs = fn_op(**_parsed_args)
+    args: []

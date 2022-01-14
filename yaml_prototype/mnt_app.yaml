@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: pvc-test-
+  annotations: {pipelines.kubeflow.org/kfp_sdk_version: 1.8.10, pipelines.kubeflow.org/pipeline_compilation_time: '2022-01-12T15:07:56.048464',
+    pipelines.kubeflow.org/pipeline_spec: '{"description": "is it displayed?", "name":
+      "pvc-test"}'}
+  labels: {pipelines.kubeflow.org/kfp_sdk_version: 1.8.10}
+spec:
+  entrypoint: pvc-test
+  templates:
+  - name: pvc
+    container:
+      image: stellapark401/caltech101:pvc
+      volumeMounts:
+      - {mountPath: /app, name: stella-test-pv}
+    metadata:
+      annotations: {pipelines.kubeflow.org/task_display_name: logging}
+      labels:
+        pipelines.kubeflow.org/kfp_sdk_version: 1.8.10
+        pipelines.kubeflow.org/pipeline-sdk-type: kfp
+        pipelines.kubeflow.org/enable_caching: "true"
+    volumes:
+    - name: stella-test-pv
+      persistentVolumeClaim: {claimName: data-pvc}
+  - name: pvc-test
+    dag:
+      tasks:
+      - {name: pvc, template: pvc}
+  arguments:
+    parameters: []
+  serviceAccountName: pipeline-runner

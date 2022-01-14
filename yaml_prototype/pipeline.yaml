@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: trial-
+  annotations: {pipelines.kubeflow.org/kfp_sdk_version: 1.8.10, pipelines.kubeflow.org/pipeline_compilation_time: '2022-01-10T13:32:17.662992',
+    pipelines.kubeflow.org/pipeline_spec: '{"name": "trial"}'}
+  labels: {pipelines.kubeflow.org/kfp_sdk_version: 1.8.10}
+spec:
+  entrypoint: trial
+  templates:
+  - name: stand-alone
+    container: {image: 'stellapark401/kfp:trial1'}
+    metadata:
+      annotations: {pipelines.kubeflow.org/task_display_name: trial}
+      labels:
+        pipelines.kubeflow.org/kfp_sdk_version: 1.8.10
+        pipelines.kubeflow.org/pipeline-sdk-type: kfp
+        pipelines.kubeflow.org/enable_caching: "true"
+  - name: trial
+    dag:
+      tasks:
+      - {name: stand-alone, template: stand-alone}
+  arguments:
+    parameters: []
+  serviceAccountName: pipeline-runner
