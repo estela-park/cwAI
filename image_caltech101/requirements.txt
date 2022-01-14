@@ -1,0 +1,5 @@
+gdown
+keras_preprocessing
+image
+scipy
+tensorflow==2.4.1
